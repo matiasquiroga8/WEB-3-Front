@@ -1,50 +1,40 @@
+<!-- src/components/QuickClientRegister.vue -->
 <template>
-    <v-card class="pa-6 mx-auto" max-width="400">
-        <v-card-title class="text-h6 text-center">
-            Registro rápido de clientes
-        </v-card-title>
-
+    <v-card class="pa-4" max-width="480">
+        <v-card-title>Registro rápido de clientes</v-card-title>
         <v-card-text>
-            <!-- Campo de texto con v-model -->
-            <v-text-field v-model="nombreCliente" label="Nombre del cliente" variant="outlined" clearable />
+            <v-text-field v-model="name" label="Nombre del cliente"
+                :class="{ 'invalid-input': name && name.length < 3 }" :counter="50" clearable />
+            <v-btn class="mt-4" :disabled="!valid" color="primary" @click="register">Registrar</v-btn>
 
-            <!-- Botón de registro -->
-            <v-btn color="primary" block class="mt-4" @click="registrarCliente">
-                Registrar
-            </v-btn>
-
-            <!-- Confirmación visual -->
-            <v-alert v-if="mensajeBienvenida" type="success" class="mt-4" border="start" elevation="2">
-                {{ mensajeBienvenida }}
+            <v-alert v-if="message" class="mt-4" type="success">
+                {{ message }}
             </v-alert>
         </v-card-text>
     </v-card>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from 'vue'
+const name = ref('')
+const message = ref('')
 
-const nombreCliente = ref("");
-const mensajeBienvenida = ref("");
+const valid = computed(() => name.value.trim().length >= 3)
 
-function registrarCliente() {
-    if (nombreCliente.value.trim() !== "") {
-        // Simulación de guardado en "base de datos"
-        console.log(`Cliente registrado: ${nombreCliente.value}`);
-
-        // Mostrar mensaje de confirmación
-        mensajeBienvenida.value = `¡Bienvenido/a, ${nombreCliente.value}! 🎉`;
-
-        // Limpiar el campo
-        nombreCliente.value = "";
-    } else {
-        mensajeBienvenida.value = "Por favor ingrese un nombre válido.";
+function register() {
+    if (!valid.value) {
+        message.value = 'Nombre inválido.'
+        return
     }
+    console.log('Cliente registrado:', name.value)
+    message.value = `🎉 Bienvenido, ${ name.value } !`
+        // Para simular "guardar", podrías emitir un evento; aquí solo limpiamos
+        name.value = ''
 }
 </script>
 
 <style scoped>
-.v-card {
-    border-radius: 12px;
+.invalid-input input {
+    border: 1px solid #ff6b6b !important;
 }
 </style>
